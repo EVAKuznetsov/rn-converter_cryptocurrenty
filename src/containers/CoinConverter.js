@@ -76,11 +76,13 @@ const CoinConverterContainer = () => {
     }
   }
   return (
-    <CoinConverter
-      currenciesData={currenciesData}
-      state={state}
-      onChange={onChange}
-    />
+    currenciesData.length > 0 && (
+      <CoinConverter
+        currenciesData={currenciesData}
+        state={state}
+        onChange={onChange}
+      />
+    )
   )
 }
 

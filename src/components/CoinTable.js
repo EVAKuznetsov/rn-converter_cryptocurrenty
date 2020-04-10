@@ -10,6 +10,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
+import classNames from 'class-names'
 
 const useStyles = makeStyles({
   table: {
@@ -19,6 +20,15 @@ const useStyles = makeStyles({
     height: 24,
     borderRadius: '50%',
   },
+  redCell: {
+    backgroundColor: '#f9a8a8',
+  },
+  greenCell: {
+    backgroundColor: '#a8f9c1',
+  },
+  cell: {
+    transition: '0.5s',
+  },
 })
 
 const CoinTable = ({
@@ -27,9 +37,9 @@ const CoinTable = ({
   orderBy,
   order,
   onSetActiveCoin,
+  differentData,
 }) => {
   const classes = useStyles()
-
   return (
     <Paper>
       <TableContainer component={Paper}>
@@ -91,7 +101,18 @@ const CoinTable = ({
                 </TableCell>
                 <TableCell align="right">{row.name}</TableCell>
                 <TableCell align="right">{row.fullName}</TableCell>
-                <TableCell align="right">${row.price.toFixed(2)}</TableCell>
+                <TableCell
+                  className={classNames(
+                    classes.cell,
+                    differentData[row.name] &&
+                      (differentData[row.name] === 'up'
+                        ? classes.greenCell
+                        : classes.redCell)
+                  )}
+                  align="right"
+                >
+                  ${row.price.toFixed(2)}
+                </TableCell>
                 <TableCell align="right">
                   ${row.volume24hour.toFixed(2)}
                 </TableCell>
@@ -110,6 +131,7 @@ CoinTable.propTypes = {
   orderBy: PropTypes.string,
   order: PropTypes.string,
   onSetActiveCoin: PropTypes.func,
+  differentData: PropTypes.object,
 }
 
 export default CoinTable

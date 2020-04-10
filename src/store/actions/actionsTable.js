@@ -4,6 +4,7 @@ import {
   GET_CURRENCIES_DATA_SUCCESS,
   SORT_CURRENCIES_DATA,
   SET_ACTIVE_COIN,
+  CLEAR_DIFFERENT_DATA,
 } from '../actionTypes'
 export const fetchCurrenciesData = () => async (dispatch) => {
   dispatch({ type: GET_CURRENCIES_DATA_REQUEST })
@@ -35,3 +36,4 @@ export const setActiveCoin = (name) => ({
   type: SET_ACTIVE_COIN,
   payload: name,
 })
+export const clearDifferentData = () => ({ type: CLEAR_DIFFERENT_DATA })
