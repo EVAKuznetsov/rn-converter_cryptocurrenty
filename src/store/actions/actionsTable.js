@@ -6,10 +6,13 @@ import {
   SET_ACTIVE_COIN,
   CLEAR_DIFFERENT_DATA,
 } from '../actionTypes'
-export const fetchCurrenciesData = () => async (dispatch) => {
+
+export const fetchCurrenciesData = (oldCurrencyesData = []) => async (
+  dispatch
+) => {
   dispatch({ type: GET_CURRENCIES_DATA_REQUEST })
   const data = await Api.fetchCurrenciesData()
-  const currenciesData =
+  const newCurrenciesData =
     data &&
     data.map((coin) => ({
       id: coin.CoinInfo.Id,
@@ -19,11 +22,25 @@ export const fetchCurrenciesData = () => async (dispatch) => {
       price: coin.RAW.USD.PRICE,
       volume24hour: coin.RAW.USD.VOLUME24HOUR,
     }))
+
+  const differentData = {}
+  if (oldCurrencyesData.length > 0) {
+    newCurrenciesData.map((coin) => {
+      const currentRow = oldCurrencyesData.find((row) => row.id === coin.id)
+      if (currentRow.price !== coin.price) {
+        differentData[coin.name] = currentRow.price > coin.price ? 'up' : 'down'
+      }
+      return currentRow.price !== coin.price
+    })
+  }
   setTimeout(
     () =>
       dispatch({
         type: GET_CURRENCIES_DATA_SUCCESS,
-        currenciesData: currenciesData,
+        payload: {
+          currenciesData: newCurrenciesData,
+          differentData: differentData,
+        },
       }),
     3000
   )

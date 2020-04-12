@@ -13,25 +13,23 @@ const CoinTableContainer = () => {
   const {
     currenciesData,
     differentData,
-    isLoading,
+    // isLoading,
     sortField,
     sortType,
   } = useSelector((state) => state.table)
 
   useEffect(() => {
     dispatch(fetchCurrenciesData())
-    const updatingData = setInterval(
-      () => dispatch(fetchCurrenciesData()),
-      30000
-    )
-    return () => {
-      clearInterval(updatingData)
-    }
   }, [dispatch])
 
   useEffect(() => {
+    const updatingData = setTimeout(
+      () => dispatch(fetchCurrenciesData(currenciesData)),
+      30000
+    )
     const clearDiffData = setTimeout(() => dispatch(clearDifferentData()), 8000)
     return () => {
+      clearTimeout(updatingData)
       clearTimeout(clearDiffData)
     }
   }, [dispatch, currenciesData])

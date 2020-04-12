@@ -10,7 +10,7 @@ import {
 const initialState = {
   currenciesData: [],
   isLoading: false,
-  sortField: '',
+  sortField: 'name',
   sortType: 'asc',
   activeCoin: '',
   differentData: {},
@@ -20,33 +20,22 @@ const handlers = {
     ...state,
     isLoading: true,
   }),
-  [GET_CURRENCIES_DATA_SUCCESS]: (state, { currenciesData }) => {
-    const differentData = {}
-
-    if (state.currenciesData.length > 0) {
-      currenciesData.map((coin) => {
-        const currentRow = state.currenciesData.find(
-          (row) => row.id === coin.id
-        )
-        if (currentRow.price !== coin.price) {
-          differentData[coin.name] =
-            currentRow.price > coin.price ? 'up' : 'down'
-        }
-        return currentRow.price !== coin.price
-      })
-    }
-
+  [GET_CURRENCIES_DATA_SUCCESS]: (state, { payload }) => {
     return {
       ...state,
-      currenciesData: currenciesData,
-      differentData: differentData,
+      currenciesData: sortData(
+        payload.currenciesData,
+        state.sortField,
+        state.sortType
+      ),
+      differentData: payload.differentData,
       isLoading: false,
     }
   },
   [CLEAR_DIFFERENT_DATA]: (state) => ({ ...state, differentData: {} }),
   [SORT_CURRENCIES_DATA]: (state, { sortField }) => {
     const sortType = state.sortType === 'asc' ? 'desc' : 'asc'
-    const sortCurrenciesData = _.orderBy(
+    const sortCurrenciesData = sortData(
       state.currenciesData,
       sortField,
       sortType
@@ -64,6 +53,9 @@ const handlers = {
   }),
   DEFAULT: (state) => state,
 }
+
+const sortData = (data, sortField, sortType) =>
+  _.orderBy(data, sortField, sortType)
 
 export default (state = initialState, action) => {
   const handle = handlers[action.type] || handlers.DEFAULT
