@@ -7,9 +7,9 @@ import {
   CLEAR_DIFFERENT_DATA,
 } from '../actionTypes'
 
-export const fetchCurrenciesData = (oldCurrencyesData = []) => async (
-  dispatch
-) => {
+export const fetchCurrenciesData = () => async (dispatch, getState) => {
+  const { currenciesData: oldCurrencyesData } = getState().table
+
   dispatch({ type: GET_CURRENCIES_DATA_REQUEST })
   const data = await Api.fetchCurrenciesData()
   const newCurrenciesData =
